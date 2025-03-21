@@ -141,12 +141,17 @@ def create_app(test_config=None):
         return [
             {
                 'id': emprestimo.id,
-                'livro': emprestimo.book_id,
-                'usuario': emprestimo.user_id,
-                'emprestado_em': emprestimo.loan_date,
-                'devolvido_em': emprestimo.return_date,
+                'book_id': emprestimo.book_id,
+                'user_id': emprestimo.user_id,
+                'loan_date': emprestimo.loan_date,
+                'return_date': emprestimo.return_date,
                 'is_activated': emprestimo.is_activated,
-                'created_at': emprestimo.created_at
+                'created_at': emprestimo.created_at,
+                'book_id': emprestimo.book.id,
+                'book_title': emprestimo.book.title,
+                'user_id': emprestimo.user.id,
+                'user_name': emprestimo.user.name
+
             } for emprestimo in emprestimos
         ]
     
@@ -159,12 +164,16 @@ def create_app(test_config=None):
 
         return {
             'id': emprestimo.id,
-            'livro': emprestimo.book_id,
-            'usuario': emprestimo.user_id,
-            'emprestado_em': emprestimo.loan_date,
-            'devolvido_em': emprestimo.return_date,
+            'book_id': emprestimo.book_id,
+            'user_id': emprestimo.user_id,
+            'loan_date': emprestimo.loan_date,
+            'return_date': emprestimo.return_date,
             'is_activated': emprestimo.is_activated,
-            'created_at': emprestimo.created_at
+            'created_at': emprestimo.created_at,
+            'book_id': emprestimo.book.id,
+            'book_title': emprestimo.book.title,
+            'user_id': emprestimo.user.id,
+            'user_name': emprestimo.user.name
         }
     
     @app.route('/api/emprestimos/create', methods=['POST'])
@@ -172,10 +181,10 @@ def create_app(test_config=None):
         data = request.get_json()
 
         emprestimo = Loan(
-            book_id=data['livro'],
-            user_id=data['usuario'],
-            loan_date=data['emprestado_em'],
-            return_date=data['devolvido_em'],
+            book_id=data['book_id'],
+            user_id=data['user_id'],
+            loan_date=data['loan_date'],
+            return_date=data['return_date'],
             is_activated=data['is_activated']
         )
         db.session.add(emprestimo)
@@ -238,13 +247,13 @@ def create_app(test_config=None):
         return [
             {
                 'id': livro.id,
-                'titulo': livro.title,
+                'title': livro.title,
                 'autor': livro.autor,
-                'editora': livro.editor,
-                'ano': livro.publish_year,
+                'editor': livro.editor,
+                'publish_year': livro.publish_year,
                 'isbn': livro.isbn,
-                'categoria': livro.category,
-                'localizacao': livro.localization,
+                'category': livro.category,
+                'localization': livro.localization,
                 'is_activated': livro.is_activated
             } for livro in livros
         ]
@@ -258,13 +267,13 @@ def create_app(test_config=None):
 
         return {
             'id': livro.id,
-            'titulo': livro.title,
+            'title': livro.title,
             'autor': livro.autor,
-            'editora': livro.editor,
-            'ano': livro.publish_year,
+            'editor': livro.editor,
+            'publish_year': livro.publish_year,
             'isbn': livro.isbn,
-            'categoria': livro.category,
-            'localizacao': livro.localization,
+            'category': livro.category,
+            'localization': livro.localization,
             'is_activated': livro.is_activated
         }
     
@@ -273,13 +282,13 @@ def create_app(test_config=None):
         data = request.get_json()
 
         livro = Book(
-            title=data['titulo'],
+            title=data['title'],
             autor=data['autor'],
-            editor=data['editora'],
-            publish_year=data['ano'],
+            editor=data['editor'],
+            publish_year=data['publish_year'],
             isbn=data['isbn'],
-            category=data['categoria'],
-            localization=data['localizacao'],
+            category=data['category'],
+            localization=data['localization'],
             is_activated=data['is_activated']
         )
         db.session.add(livro)
@@ -306,13 +315,13 @@ def create_app(test_config=None):
         if livro is None:
             return {'error': 'Livro não encontrado'}, 404
 
-        livro.title = data['titulo']
+        livro.title = data['title']
         livro.autor = data['autor']
-        livro.editor = data['editora']
-        livro.publish_year = data['ano']
+        livro.editor = data['editor']
+        livro.publish_year = data['publish_year']
         livro.isbn = data['isbn']
-        livro.category = data['categoria']
-        livro.localization = data['localizacao']
+        livro.category = data['category']
+        livro.localization = data['localization']
         livro.is_activated = data['is_activated']
 
         db.session.commit()

@@ -1,4 +1,33 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Livros{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
 <div>
-    <h1>Novo Livro</h1>
-    <p>Form.....</p>
+    <h1>Criar Livro</h1>
 </div>
+
+<div class="container">
+    <form class="gt-form" action="/livros/novo" method="POST" accept="application/json">
+        <label for="title">Título</label>
+        <input type="text" name="title" >
+        <label for="author">Autor</label>
+        <input type="text" name="author" >
+        <label for="editor">Editora</label>
+        <input type="text" name="editor" >
+        <label for="publish_year">Ano de publicação</label>
+        <input type="text" name="publish_year" >
+        <label for="isbn">ISBN</label>
+        <input type="text" name="isbn" >
+        <label for="category">Categoria</label>
+        <input type="text" name="category" >
+        <label for="localization">Localização</label>
+        <input type="text" name="localization" >
+        <input class="btn success" type="submit" value="Salvar">
+    </form>
+    <a class="btn danger" href="/livros">Cancelar</a>
+</div>
+
+{% endblock %}

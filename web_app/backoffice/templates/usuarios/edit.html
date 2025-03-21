@@ -1,4 +1,27 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Usuários{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
 <div>
     <h1>Editar Usuário</h1>
-    <p>{{ usuario }}</p>
 </div>
+
+<div class="container">
+    <form class="gt-form" action="/usuarios/{{ usuario['id'] }}" method="POST">
+        <label for="name">Nome</label>
+        <input type="text" name="name" value="{{ usuario['nome'] }}">
+        <label for="email">Email</label>
+        <input type="text" name="email" value="{{ usuario['email'] }}">
+        <label for="cpf">CPF</label>
+        <input type="text" name="cpf" value="{{ usuario['cpf'] }}">
+        <label for="phone">Telefone</label>
+        <input type="text" name="phone" value="{{ usuario['phone'] }}">
+        <input class="btn success" type="submit" value="Salvar">
+    </form>
+    <a class="btn danger" href="/usuarios">Cancelar</a>
+</div>
+
+{% endblock %}

@@ -1,5 +1,39 @@
-<div>
-    <h1>Usuarios</h1>
-    <a href="/usuarios/novo">Novo</a>
-    <p>{{ usuarios }}</p>
-</div>
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Usuários{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <a class="btn success" href="/usuarios/novo">Novo</a>
+        <br><br>
+
+        <table class="gt-table striped hovered">
+            <thead>
+                <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>CPF</th>
+                <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario['nome'] }}</td>
+                    <td>{{ usuario['email'] }}</td>
+                    <td>{{ usuario['phone'] }}</td>
+                    <td>{{ usuario['cpf'] }}</td>
+                    <td>
+                        <a class="btn success" href="/usuarios/{{ usuario['id'] }}">Editar</a>
+                        <a class="btn danger" href="/usuarios/delete/{{ usuario['id'] }}">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}

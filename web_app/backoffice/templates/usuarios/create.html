@@ -1,4 +1,27 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Usuários{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
 <div>
-    <h1>Novo Usuário</h1>
-    <p>Form.....</p>
+    <h1>Criar Usuário</h1>
 </div>
+
+<div class="container">
+    <form class="gt-form" action="/usuarios/novo" method="POST" accept="application/json">
+        <label for="name">Nome</label>
+        <input type="text" name="name" >
+        <label for="email">Email</label>
+        <input type="text" name="email" >
+        <label for="cpf">CPF</label>
+        <input type="text" name="cpf" >
+        <label for="phone">Telefone</label>
+        <input type="text" name="phone" >
+        <input class="btn success" type="submit" value="Salvar">
+    </form>
+    <a class="btn danger" href="/usuarios">Cancelar</a>
+</div>
+
+{% endblock %}

@@ -1,5 +1,43 @@
-<div>
-    <h1>Livros</h1>
-    <a href="/livros/novo">Novo</a>
-    <p>{{ livros }}</p>
-</div>
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Livros{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <a class="btn success" href="/livros/novo">Novo</a>
+        <br><br>
+        <table class="gt-table striped hovered">
+            <thead>
+                <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Editora</th>
+                <th>Ano de publicação</th>
+                <th>ISBN</th>
+                <th>Categoria</th>
+                <th>Localização</th>
+                <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                {% for livro in livros %}
+                <tr>
+                    <td>{{ livro['title'] }}</td>
+                    <td>{{ livro['autor'] }}</td>
+                    <td>{{ livro['editor'] }}</td>
+                    <td>{{ livro['publish_year'] }}</td>
+                    <td>{{ livro['isbn'] }}</td>
+                    <td>{{ livro['category'] }}</td>
+                    <td>{{ livro['localization'] }}</td>
+                    <td>
+                        <a class="btn success" href="/livros/{{ livro['id'] }}">Editar</a>
+                        <a class="btn danger" href="/livros/delete/{{ livro['id'] }}">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,5 +1,39 @@
-<div>
-    <h1>Empréstimos</h1>
-    <a href="/emprestimos/novo">Novo</a>
-    <p>{{ emprestimos }}</p>
-</div>
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Empréstimos{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <a class="btn success" href="/emprestimos/novo">Novo</a>
+        <br><br>
+        <table class="gt-table striped hovered">
+            <thead>
+                <tr>
+                <th>Livro</th>
+                <th>Usuário</th>
+                <th>Data saída</th>
+                <th>Data devolução</th>
+                <th>Ativo</th>
+                <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                {% for emprestimo in emprestimos %}
+                <tr>
+                    <td>{{ emprestimo['book_title'] }}</td>
+                    <td>{{ emprestimo['user_name'] }}</td>
+                    <td>{{ emprestimo['loan_date'] }}</td>
+                    <td>{{ emprestimo['return_date'] }}</td>
+                    <td>{{ emprestimo['is_activated'] }}</td>
+                    <td>
+                        <a class="btn success" href="/emprestimos/{{ emprestimo['id'] }}">Editar</a>
+                        <a class="btn danger" href="/emprestimos/delete/{{ emprestimo['id'] }}">Deletar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
