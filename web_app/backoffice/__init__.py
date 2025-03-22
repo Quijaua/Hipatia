@@ -1,7 +1,7 @@
 import os
 import requests
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from datetime import datetime
 
 def create_app(test_config=None):
@@ -52,6 +52,7 @@ def create_app(test_config=None):
                 'phone': data['phone'],
                 'cpf': data['cpf']
             })
+            flash('Usuário criado com sucesso')
             return redirect(url_for('usuarios'))
         
         return render_template('usuarios/create.html')
@@ -59,10 +60,13 @@ def create_app(test_config=None):
     @app.route('/usuarios/<int:id>', methods=['GET', 'POST'])
     def editar_usuario(id):
         usuario = getUsuario(id)
+        print(usuario.get('error'))
+        if usuario.get('error'):
+            flash(usuario.get('error'))
+            return redirect(url_for('usuarios'))
 
         if request.method == 'POST':
             data = request.form
-            print(data)
             api_url = base_api_url + '/usuarios/update/' + str(id)
 
             requests.put(api_url, json={
@@ -73,6 +77,7 @@ def create_app(test_config=None):
                 'phone': data['phone'],
                 'cpf': data['cpf']
             })
+            flash('Usuário atualizado com sucesso')
             return redirect(url_for('usuarios'))
         
         return render_template('usuarios/edit.html', usuario=usuario)
@@ -80,6 +85,7 @@ def create_app(test_config=None):
     @app.route('/usuarios/delete/<int:id>', methods=['GET'])
     def delete_usuario(id):
         requests.delete(base_api_url + '/usuarios/delete/' + str(id))
+        flash('Usuário excluído com sucesso')
         return redirect(url_for('usuarios'))
     
     def getUsuarios():
@@ -110,6 +116,7 @@ def create_app(test_config=None):
                 'localization': data['localization'],
                 'is_activated': 1
             })
+            flash('Livro criado com sucesso')
             return redirect(url_for('livros'))
         
         return render_template('livros/create.html')
@@ -117,6 +124,10 @@ def create_app(test_config=None):
     @app.route('/livros/<int:id>', methods=['GET', 'POST'])
     def editar_livro(id):
         livro = getLivro(id)
+
+        if livro.get('error'):
+            flash(livro.get('error'))
+            return redirect(url_for('livros'))
 
         if request.method == 'POST':
             data = request.form
@@ -132,6 +143,7 @@ def create_app(test_config=None):
                 'localization': data['localization'],
                 'is_activated': 1
             })
+            flash('Livro atualizado com sucesso')
             return redirect(url_for('livros'))
         
         return render_template('livros/edit.html', livro=livro)
@@ -139,6 +151,7 @@ def create_app(test_config=None):
     @app.route('/livros/delete/<int:id>', methods=['GET'])
     def delete_livro(id):
         requests.delete(base_api_url + '/livros/delete/' + str(id))
+        flash('Livro excluído com sucesso')
         return redirect(url_for('livros'))
     
     def getLivros():
@@ -169,6 +182,7 @@ def create_app(test_config=None):
                 'return_date': data['return_date'],
                 'is_activated': 1 if data['is_activated'] == 'true' else 0
             })
+            flash('Empréstimo criado com sucesso')
             return redirect(url_for('emprestimos'))
         
         return render_template('emprestimos/create.html', usuarios=usuarios, livros=livros)
@@ -178,6 +192,10 @@ def create_app(test_config=None):
         emprestimo = getEmprestimo(id)
         usuarios = getUsuarios()
         livros = getLivros()
+
+        if emprestimo.get('error'):
+            flash(emprestimo.get('error'))
+            return redirect(url_for('emprestimos'))
 
         if request.method == 'POST':
             data = request.form
@@ -190,6 +208,7 @@ def create_app(test_config=None):
                 'return_date': data['return_date'],
                 'is_activated': 1 if data['is_activated'] == 'true' else 0
             })
+            flash('Empréstimo atualizado com sucesso')
             return redirect(url_for('emprestimos'))
         
         return render_template('emprestimos/edit.html', emprestimo=emprestimo, usuarios=usuarios, livros=livros)
@@ -197,6 +216,7 @@ def create_app(test_config=None):
     @app.route('/emprestimos/delete/<int:id>', methods=['GET'])
     def delete_emprestimo(id):
         requests.delete(base_api_url + '/emprestimos/delete/' + str(id))
+        flash('Empréstimo excluído com sucesso')
         return redirect(url_for('emprestimos'))
     
     def getEmprestimos():
