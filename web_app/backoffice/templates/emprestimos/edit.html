@@ -10,7 +10,7 @@
 </div>
 
 <div class="container">
-    <form class="gt-form" action="/emprestimos/{{ emprestimo['id'] }}" method="POST" accept="application/json">
+    <form id="emprestimo-form" class="gt-form" action="/emprestimos/{{ emprestimo['id'] }}" method="POST" accept="application/json">
         <label for="name">Livro</label>
         <select name="book_id" id="book_id">
             <option value="">Selecione um livro</option>
@@ -34,9 +34,8 @@
             <option value="true" {% if emprestimo['is_activated'] %}selected{% endif %}>Sim</option>
             <option value="false" {% if not emprestimo['is_activated'] %}selected{% endif %}>Não</option>
         </select>
-        <br>
-        <input class="btn success" type="submit" value="Salvar">
     </form>
+    <input class="btn success" type="submit" value="Salvar" form="emprestimo-form">
     <a class="btn danger" href="/emprestimos">Cancelar</a>
 </div>
 

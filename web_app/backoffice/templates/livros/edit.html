@@ -10,7 +10,7 @@
 </div>
 
 <div class="container">
-    <form class="gt-form" action="/livros/{{ livro['id'] }}" method="POST" accept="application/json">
+    <form id="livro-form" class="gt-form" action="/livros/{{ livro['id'] }}" method="POST" accept="application/json">
         <label for="title">Título</label>
         <input type="text" name="title" value="{{ livro['title'] }}">
         <label for="author">Autor</label>
@@ -25,8 +25,8 @@
         <input type="text" name="category" value="{{ livro['category'] }}">
         <label for="localization">Localização</label>
         <input type="text" name="localization" value="{{ livro['localization'] }}">
-        <input class="btn success" type="submit" value="Salvar">
     </form>
+    <input class="btn success" type="submit" value="Salvar" form="livro-form">
     <a class="btn danger" href="/livros">Cancelar</a>
 </div>
 

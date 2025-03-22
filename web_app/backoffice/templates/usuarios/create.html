@@ -10,7 +10,7 @@
 </div>
 
 <div class="container">
-    <form class="gt-form" action="/usuarios/novo" method="POST" accept="application/json">
+    <form id="user-form" class="gt-form" action="/usuarios/novo" method="POST" accept="application/json">
         <label for="name">Nome</label>
         <input type="text" name="name" >
         <label for="email">Email</label>
@@ -24,9 +24,8 @@
             <option value="true">Sim</option>
             <option value="false">Não</option>
         </select>
-        <br>
-        <input class="btn success" type="submit" value="Salvar">
     </form>
+    <input class="btn success" type="submit" value="Salvar" form="user-form">
     <a class="btn danger" href="/usuarios">Cancelar</a>
 </div>
 

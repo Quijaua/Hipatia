@@ -29,8 +29,8 @@
                     <td>{{ usuario['cpf'] }}</td>
                     <td>{% if usuario['is_activated'] %}Sim{% else %}Não{% endif %}</td>
                     <td>
-                        <a class="btn success" href="/usuarios/{{ usuario['id'] }}">Editar</a>
-                        <a class="btn danger" href="/usuarios/delete/{{ usuario['id'] }}">Excluir</a>
+                        <a class="action success" href="/usuarios/{{ usuario['id'] }}">Editar</a>
+                        <a class="action danger" href="/usuarios/delete/{{ usuario['id'] }}">Excluir</a>
                     </td>
                 </tr>
                 {% endfor %}

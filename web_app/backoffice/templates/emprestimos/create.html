@@ -10,7 +10,7 @@
 </div>
 
 <div class="container">
-    <form class="gt-form" action="/emprestimos/novo" method="POST" accept="application/json">
+    <form id="emprestimo-form" class="gt-form" action="/emprestimos/novo" method="POST" accept="application/json">
         <label for="book_id">Livro</label>
         <select name="book_id" id="book_id">
             <option value="">Selecione um livro</option>
@@ -29,9 +29,8 @@
         <input type="date" name="loan_date" >
         <label for="return_date">Data devolução</label>
         <input type="date" name="return_date" >
-        <br>
-        <input class="btn success" type="submit" value="Salvar">
     </form>
+    <input class="btn success" type="submit" value="Salvar" form="emprestimo-form">
     <a class="btn danger" href="/emprestimos">Cancelar</a>
 </div>
 

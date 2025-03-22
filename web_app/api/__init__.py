@@ -133,7 +133,7 @@ def create_app(test_config=None):
         db.session.delete(usuario)
         db.session.commit()
 
-        return {'message': 'Usuário deletado com sucesso'}
+        return {'message': 'Usuário excluído com sucesso'}
     
     # empréstimos
     @app.route('/api/emprestimos', methods=['GET'])
@@ -239,7 +239,7 @@ def create_app(test_config=None):
         db.session.delete(emprestimo)
         db.session.commit()
 
-        return {'message': 'Empréstimo deletado com sucesso'}
+        return {'message': 'Empréstimo excluído com sucesso'}
     
     # livros
     @app.route('/api/livros', methods=['GET'])
@@ -350,6 +350,6 @@ def create_app(test_config=None):
         db.session.delete(livro)
         db.session.commit()
 
-        return {'message': 'Livro deletado com sucesso'}
+        return {'message': 'Livro excluído com sucesso'}
 
     return app

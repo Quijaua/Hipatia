@@ -32,8 +32,8 @@
                     <td>{{ livro['category'] }}</td>
                     <td>{{ livro['localization'] }}</td>
                     <td>
-                        <a class="btn success" href="/livros/{{ livro['id'] }}">Editar</a>
-                        <a class="btn danger" href="/livros/delete/{{ livro['id'] }}">Excluir</a>
+                        <a class="action success" href="/livros/{{ livro['id'] }}">Editar</a>
+                        <a class="action danger" href="/livros/delete/{{ livro['id'] }}">Excluir</a>
                     </td>
                 </tr>
                 {% endfor %}
