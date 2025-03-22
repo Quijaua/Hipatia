@@ -96,7 +96,7 @@ def create_app(test_config=None):
     @app.route('/api/usuarios/update/<int:id>', methods=['PUT'])
     def updateUsuario(id):
         data = request.get_json()
-
+        print(data)
         usuario = User.query.filter_by(id=id).first()
 
         if usuario is None:
@@ -108,6 +108,7 @@ def create_app(test_config=None):
         usuario.is_activated = data['is_activated']
         usuario.phone = data['phone']
         usuario.cpf = data['cpf']
+        usuario.is_activated = data['is_activated']
 
         db.session.commit()
 
@@ -118,7 +119,8 @@ def create_app(test_config=None):
             'role': usuario.role,
             'is_activated': usuario.is_activated,
             'phone': usuario.phone,
-            'cpf': usuario.cpf
+            'cpf': usuario.cpf,
+            'is_activated': usuario.is_activated
         }
     
     @app.route('/api/usuarios/delete/<int:id>', methods=['DELETE'])
@@ -143,8 +145,8 @@ def create_app(test_config=None):
                 'id': emprestimo.id,
                 'book_id': emprestimo.book_id,
                 'user_id': emprestimo.user_id,
-                'loan_date': emprestimo.loan_date,
-                'return_date': emprestimo.return_date,
+                'loan_date': emprestimo.loan_date.strftime('%Y-%m-%d'),
+                'return_date': emprestimo.return_date.strftime('%Y-%m-%d'),
                 'is_activated': emprestimo.is_activated,
                 'created_at': emprestimo.created_at,
                 'book_id': emprestimo.book.id,
@@ -166,8 +168,8 @@ def create_app(test_config=None):
             'id': emprestimo.id,
             'book_id': emprestimo.book_id,
             'user_id': emprestimo.user_id,
-            'loan_date': emprestimo.loan_date,
-            'return_date': emprestimo.return_date,
+            'loan_date': emprestimo.loan_date.strftime('%Y-%m-%d'),
+            'return_date': emprestimo.return_date.strftime('%Y-%m-%d'),
             'is_activated': emprestimo.is_activated,
             'created_at': emprestimo.created_at,
             'book_id': emprestimo.book.id,
@@ -209,10 +211,10 @@ def create_app(test_config=None):
         if emprestimo is None:
             return {'error': 'Empréstimo não encontrado'}, 404
 
-        emprestimo.book_id = data['livro']
-        emprestimo.user_id = data['usuario']
-        emprestimo.loan_date = data['emprestado_em']
-        emprestimo.return_date = data['devolvido_em']
+        emprestimo.book_id = data['book_id']
+        emprestimo.user_id = data['user_id']
+        emprestimo.loan_date = data['loan_date']
+        emprestimo.return_date = data['return_date']
         emprestimo.is_activated = data['is_activated']
 
         db.session.commit()

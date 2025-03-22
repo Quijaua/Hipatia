@@ -27,7 +27,9 @@ def create_app(test_config=None):
 
     @app.route('/', methods=['GET'])
     def index():
-        return 'Salve rapeize!!'
+        return render_template('index.html')
+    
+    base_api_url = 'http://localhost:5001/api'
     
     # Rotas da aplicação
     # usuários
@@ -40,13 +42,13 @@ def create_app(test_config=None):
     def novo_usuario():
         if request.method == 'POST':
             data = request.form
-            api_url = 'http://localhost:5001/api/usuarios/create'
+            api_url = base_api_url + '/usuarios/create'
 
             requests.post(api_url, json={
                 'name': data['name'],
                 'email': data['email'],
                 'role': 'user',
-                'is_activated': 1,
+                'is_activated': 1 if data['is_activated'] == 'true' else 0,
                 'phone': data['phone'],
                 'cpf': data['cpf']
             })
@@ -60,13 +62,14 @@ def create_app(test_config=None):
 
         if request.method == 'POST':
             data = request.form
-            api_url = 'http://localhost:5001/api/usuarios/update/' + str(id)
+            print(data)
+            api_url = base_api_url + '/usuarios/update/' + str(id)
 
             requests.put(api_url, json={
                 'name': data['name'],
                 'email': data['email'],
                 'role': 'user',
-                'is_activated': 1,
+                'is_activated': 1 if data['is_activated'] == 'true' else 0,
                 'phone': data['phone'],
                 'cpf': data['cpf']
             })
@@ -76,14 +79,14 @@ def create_app(test_config=None):
     
     @app.route('/usuarios/delete/<int:id>', methods=['GET'])
     def delete_usuario(id):
-        requests.delete('http://localhost:5001/api/usuarios/delete/' + str(id))
+        requests.delete(base_api_url + '/usuarios/delete/' + str(id))
         return redirect(url_for('usuarios'))
     
     def getUsuarios():
-        return requests.get('http://localhost:5001/api/usuarios').json()
+        return requests.get(base_api_url + '/usuarios').json()
     
     def getUsuario(id):
-        return requests.get('http://localhost:5001/api/usuarios/' + str(id)).json()
+        return requests.get(base_api_url + '/usuarios/' + str(id)).json()
     
     # livros
     @app.route('/livros', methods=['GET'])
@@ -95,7 +98,7 @@ def create_app(test_config=None):
     def novo_livro():
         if request.method == 'POST':
             data = request.form
-            api_url = 'http://localhost:5001/api/livros/create'
+            api_url = base_api_url + '/livros/create'
 
             requests.post(api_url, json={
                 'title': data['title'],
@@ -117,7 +120,7 @@ def create_app(test_config=None):
 
         if request.method == 'POST':
             data = request.form
-            api_url = 'http://localhost:5001/api/livros/update/' + str(id)
+            api_url = base_api_url + '/livros/update/' + str(id)
 
             requests.put(api_url, json={
                 'title': data['title'],
@@ -135,14 +138,14 @@ def create_app(test_config=None):
     
     @app.route('/livros/delete/<int:id>', methods=['GET'])
     def delete_livro(id):
-        requests.delete('http://localhost:5001/api/livros/delete/' + str(id))
+        requests.delete(base_api_url + '/livros/delete/' + str(id))
         return redirect(url_for('livros'))
     
     def getLivros():
         return requests.get('http://localhost:5001/api/livros').json()
     
     def getLivro(id):
-        return requests.get('http://localhost:5001/api/livros/' + str(id)).json()
+        return requests.get(base_api_url + '/livros/' + str(id)).json()
 
     # empréstimos
     @app.route('/emprestimos', methods=['GET'])
@@ -157,14 +160,14 @@ def create_app(test_config=None):
 
         if request.method == 'POST':
             data = request.form
-            api_url = 'http://localhost:5001/api/emprestimos/create'
+            api_url = base_api_url + '/emprestimos/create'
 
             requests.post(api_url, json={
                 'book_id': data['book_id'],
                 'user_id': data['user_id'],
                 'loan_date': data['loan_date'],
                 'return_date': data['return_date'],
-                'is_activated': 1
+                'is_activated': 1 if data['is_activated'] == 'true' else 0
             })
             return redirect(url_for('emprestimos'))
         
@@ -178,14 +181,14 @@ def create_app(test_config=None):
 
         if request.method == 'POST':
             data = request.form
-            api_url = 'http://localhost:5001/api/emprestimos/update/' + str(id)
+            api_url = base_api_url + '/emprestimos/update/' + str(id)
 
             requests.put(api_url, json={
                 'book_id': data['book_id'],
                 'user_id': data['user_id'],
                 'loan_date': data['loan_date'],
                 'return_date': data['return_date'],
-                'is_activated': 1
+                'is_activated': 1 if data['is_activated'] == 'true' else 0
             })
             return redirect(url_for('emprestimos'))
         
@@ -193,17 +196,17 @@ def create_app(test_config=None):
     
     @app.route('/emprestimos/delete/<int:id>', methods=['GET'])
     def delete_emprestimo(id):
-        requests.delete('http://localhost:5001/api/emprestimos/delete/' + str(id))
+        requests.delete(base_api_url + '/emprestimos/delete/' + str(id))
         return redirect(url_for('emprestimos'))
     
     def getEmprestimos():
-        return requests.get('http://localhost:5001/api/emprestimos').json()
+        return requests.get(base_api_url + '/emprestimos').json()
     
     def getEmprestimo(id):
-        return requests.get('http://localhost:5001/api/emprestimos/' + str(id)).json()
+        return requests.get(base_api_url + '/emprestimos/' + str(id)).json()
     
     def date_filter(d):
-        d = datetime.strptime(d, "%y-%m-%d %H:%M")
+        d = datetime.strptime(d, "%Y-%m-%d")
         return d.strftime('%d/%m/%Y')
     
     app.add_template_filter(date_filter)

@@ -11,6 +11,7 @@
     </label>
     <nav>
       <ul>
+        <li {% if request.path == url_for('index') %}class="active"{% endif %}><a href="{{ url_for('index') }}">Home</a></li>
         <li {% if request.path == url_for('usuarios') %}class="active"{% endif %}><a href="{{ url_for('usuarios') }}">Usuários</a></li>
         <li {% if request.path == url_for('livros') %}class="active"{% endif %}><a href="{{ url_for('livros') }}">Livros</a></li>
         <li {% if request.path == url_for('emprestimos') %}class="active"{% endif %}><a href="{{ url_for('emprestimos') }}">Emprestimos</a></li>

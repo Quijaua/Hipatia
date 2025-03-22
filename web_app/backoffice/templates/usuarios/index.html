@@ -16,6 +16,7 @@
                 <th>Email</th>
                 <th>Telefone</th>
                 <th>CPF</th>
+                <th>Ativo</th>
                 <th>Ações</th>
                 </tr>
             </thead>
@@ -26,6 +27,7 @@
                     <td>{{ usuario['email'] }}</td>
                     <td>{{ usuario['phone'] }}</td>
                     <td>{{ usuario['cpf'] }}</td>
+                    <td>{% if usuario['is_activated'] %}Sim{% else %}Não{% endif %}</td>
                     <td>
                         <a class="btn success" href="/usuarios/{{ usuario['id'] }}">Editar</a>
                         <a class="btn danger" href="/usuarios/delete/{{ usuario['id'] }}">Excluir</a>

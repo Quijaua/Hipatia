@@ -24,9 +24,9 @@
                 <tr>
                     <td>{{ emprestimo['book_title'] }}</td>
                     <td>{{ emprestimo['user_name'] }}</td>
-                    <td>{{ emprestimo['loan_date'] }}</td>
-                    <td>{{ emprestimo['return_date'] }}</td>
-                    <td>{{ emprestimo['is_activated'] }}</td>
+                    <td>{{ emprestimo['loan_date'] | date_filter }}</td>
+                    <td>{{ emprestimo['return_date'] | date_filter }}</td>
+                    <td>{% if emprestimo['is_activated'] %}Sim{% else %}Não{% endif %}</td>
                     <td>
                         <a class="btn success" href="/emprestimos/{{ emprestimo['id'] }}">Editar</a>
                         <a class="btn danger" href="/emprestimos/delete/{{ emprestimo['id'] }}">Deletar</a>

@@ -16,9 +16,15 @@
         <label for="email">Email</label>
         <input type="text" name="email" value="{{ usuario['email'] }}">
         <label for="cpf">CPF</label>
-        <input type="text" name="cpf" value="{{ usuario['cpf'] }}">
+        <input type="text" data-validate="cpf" name="cpf" value="{{ usuario['cpf'] }}">
         <label for="phone">Telefone</label>
-        <input type="text" name="phone" value="{{ usuario['phone'] }}">
+        <input type="text" data-validate="brPhone" name="phone" value="{{ usuario['phone'] }}">
+        <label for="is_activated">Ativo</label>
+        <select name="is_activated">
+            <option value="true" {% if usuario['is_activated'] %}selected{% endif %}>Sim</option>
+            <option value="false" {% if not usuario['is_activated'] %}selected{% endif %}>Não</option>
+        </select>
+        <br>
         <input class="btn success" type="submit" value="Salvar">
     </form>
     <a class="btn danger" href="/usuarios">Cancelar</a>

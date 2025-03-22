@@ -16,9 +16,15 @@
         <label for="email">Email</label>
         <input type="text" name="email" >
         <label for="cpf">CPF</label>
-        <input type="text" name="cpf" >
+        <input type="text" data-validate="cpf" name="cpf" >
         <label for="phone">Telefone</label>
-        <input type="text" name="phone" >
+        <input type="text" data-validate="brPhone" name="phone" >
+        <label for="is_activated">Ativo</label>
+        <select name="is_activated">
+            <option value="true">Sim</option>
+            <option value="false">Não</option>
+        </select>
+        <br>
         <input class="btn success" type="submit" value="Salvar">
     </form>
     <a class="btn danger" href="/usuarios">Cancelar</a>
