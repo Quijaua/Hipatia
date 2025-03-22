@@ -96,7 +96,7 @@ def create_app(test_config=None):
     @app.route('/api/usuarios/update/<int:id>', methods=['PUT'])
     def updateUsuario(id):
         data = request.get_json()
-        print(data)
+
         usuario = User.query.filter_by(id=id).first()
 
         if usuario is None:

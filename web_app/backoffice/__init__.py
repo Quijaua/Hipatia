@@ -60,7 +60,7 @@ def create_app(test_config=None):
     @app.route('/usuarios/<int:id>', methods=['GET', 'POST'])
     def editar_usuario(id):
         usuario = getUsuario(id)
-        print(usuario.get('error'))
+
         if usuario.get('error'):
             flash(usuario.get('error'))
             return redirect(url_for('usuarios'))
