@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Empréstimos{% endblock %}</h1>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/dataTables.min.css') }}">
+    <h1>{% block title %}Empréstimos{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <a class="btn success" href="/emprestimos/novo">Novo</a>
         <br><br>
-        <table class="gt-table striped hovered">
+        <table id="emprestimos-table" class="gt-table striped hovered">
             <thead>
                 <tr>
                 <th>Livro</th>
@@ -36,4 +37,19 @@
             </tbody>
         </table>
     </div>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.7.1.slim.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/dataTables.min.js') }}" defer></script>
+    <script type="text/javascript" defer>
+        $(document).ready(function() {
+            $('#emprestimos-table').DataTable({
+                "language": {
+                'search': 'Buscar',
+                'lengthMenu': 'Mostrando _MENU_ registros por página',
+                'zeroRecords': 'Nenhum registro encontrado',
+                'info': 'Mostrando página _PAGE_ de _PAGES_',
+                'infoEmpty': 'Nenhum registro encontrado',
+                'infoFiltered': '(Filtrado de _MAX_ registros no total)'
+            }})
+        })
+    </script>
 {% endblock %}
