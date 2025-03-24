@@ -15,6 +15,12 @@ class User(db.Model):
     cpf = db.Column(db.Text)
     loans = db.relationship('Loan', backref='user', lazy=True)
 
+class BookStatus(db.Model):
+    __tablename__ = 'book_status'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text, nullable=False)
+
 class Book(db.Model):
     __tablename__ = 'books'
 
@@ -27,7 +33,9 @@ class Book(db.Model):
     category = db.Column(db.Text)
     localization = db.Column(db.Text)
     is_activated = db.Column(db.Boolean, nullable=False, default=True)
+    status_id = db.Column(db.Integer, db.ForeignKey('book_status.id'))
     loans = db.relationship('Loan', backref='book', lazy=True)
+    status = db.relationship('BookStatus', backref='books', lazy=True)
 
 class Loan(db.Model):
     __tablename__ = 'loans'

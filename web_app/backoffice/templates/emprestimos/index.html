@@ -13,6 +13,7 @@
             <thead>
                 <tr>
                 <th>Livro</th>
+                <th>ISBN</th>
                 <th>Usuário</th>
                 <th>Data saída</th>
                 <th>Data devolução</th>
@@ -24,6 +25,7 @@
                 {% for emprestimo in emprestimos %}
                 <tr>
                     <td>{{ emprestimo['book_title'] }}</td>
+                    <td>{{ emprestimo['book_isbn'] }}</td>
                     <td>{{ emprestimo['user_name'] }}</td>
                     <td>{{ emprestimo['loan_date'] | date_filter }}</td>
                     <td>{{ emprestimo['return_date'] | date_filter }}</td>

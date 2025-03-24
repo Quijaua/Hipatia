@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, request
-from .database.models import db, User, Book, Loan
+from .database.models import db, User, Book, BookStatus, Loan
 
 
 def create_app(test_config=None):
@@ -14,6 +14,12 @@ def create_app(test_config=None):
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        if len(BookStatus.query.all()) == 0:
+            db.session.add(BookStatus(name='Disponivel'))
+            db.session.add(BookStatus(name='Emprestado'))
+            db.session.add(BookStatus(name='Reservado'))
+            db.session.add(BookStatus(name='Extraviado'))
+            db.session.commit()
 
     app.config.from_mapping(
         SECRET_KEY='dev',
@@ -151,6 +157,7 @@ def create_app(test_config=None):
                 'created_at': emprestimo.created_at,
                 'book_id': emprestimo.book.id,
                 'book_title': emprestimo.book.title,
+                'book_isbn': emprestimo.book.isbn,
                 'user_id': emprestimo.user.id,
                 'user_name': emprestimo.user.name
 
@@ -189,7 +196,11 @@ def create_app(test_config=None):
             return_date=data['return_date'],
             is_activated=data['is_activated']
         )
-        db.session.add(emprestimo)
+
+        book = Book.query.filter_by(id=data['book_id']).first()
+        book.status_id = 2
+        
+        db.session.add(emprestimo, book)
         db.session.commit()
 
         return {
@@ -216,6 +227,14 @@ def create_app(test_config=None):
         emprestimo.loan_date = data['loan_date']
         emprestimo.return_date = data['return_date']
         emprestimo.is_activated = data['is_activated']
+
+        if emprestimo.is_activated == 0:
+            book = Book.query.filter_by(id=data['book_id']).first()
+            book.status_id = 1
+
+        if emprestimo.is_activated == 1:
+            book = Book.query.filter_by(id=data['book_id']).first()
+            book.status_id = 2
 
         db.session.commit()
 
@@ -256,7 +275,9 @@ def create_app(test_config=None):
                 'isbn': livro.isbn,
                 'category': livro.category,
                 'localization': livro.localization,
-                'is_activated': livro.is_activated
+                'is_activated': livro.is_activated,
+                'status_id': livro.status_id,
+                'status_name': livro.status.name,
             } for livro in livros
         ]
     
@@ -276,7 +297,9 @@ def create_app(test_config=None):
             'isbn': livro.isbn,
             'category': livro.category,
             'localization': livro.localization,
-            'is_activated': livro.is_activated
+            'is_activated': livro.is_activated,
+            'status_id': livro.status_id,
+            'status_name': livro.status.name
         }
     
     @app.route('/api/livros/create', methods=['POST'])
@@ -291,7 +314,8 @@ def create_app(test_config=None):
             isbn=data['isbn'],
             category=data['category'],
             localization=data['localization'],
-            is_activated=data['is_activated']
+            is_activated=data['is_activated'],
+            status_id=data['status_id']
         )
         db.session.add(livro)
         db.session.commit()
@@ -325,6 +349,7 @@ def create_app(test_config=None):
         livro.category = data['category']
         livro.localization = data['localization']
         livro.is_activated = data['is_activated']
+        livro.status_id = data['status_id']
 
         db.session.commit()
 
@@ -337,7 +362,9 @@ def create_app(test_config=None):
             'isbn': livro.isbn,
             'categoria': livro.category,
             'localizacao': livro.localization,
-            'is_activated': livro.is_activated
+            'is_activated': livro.is_activated,
+            'status_id': livro.status_id,
+            'status_name': livro.status.name
         }
     
     @app.route('/api/livros/delete/<int:id>', methods=['DELETE'])
@@ -351,5 +378,16 @@ def create_app(test_config=None):
         db.session.commit()
 
         return {'message': 'Livro excluído com sucesso'}
+    
+    @app.route('/api/livros/status', methods=['GET'])
+    def getLivrosStatus():
+        status = BookStatus.query.all()
+
+        return [
+            {
+                'id': s.id,
+                'name': s.name
+            } for s in status
+        ]
 
     return app

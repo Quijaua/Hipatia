@@ -25,6 +25,12 @@
         <input type="text" name="category" value="{{ livro['category'] }}">
         <label for="localization">Localização</label>
         <input type="text" name="localization" value="{{ livro['localization'] }}">
+        <label for="status_id">Status</label>
+        <select name="status_id">
+            {% for status in status %}
+                <option value="{{ status['id'] }}" {% if status['id'] == livro['status_id'] %}selected{% endif %}>{{ status['name'] }}</option>
+            {% endfor %}
+        </select>
     </form>
     <input class="btn success" type="submit" value="Salvar" form="livro-form">
     <a class="btn danger" href="/livros">Cancelar</a>

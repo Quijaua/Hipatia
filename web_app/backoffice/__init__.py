@@ -102,6 +102,8 @@ def create_app(test_config=None):
     
     @app.route('/livros/novo', methods=['GET', 'POST'])
     def novo_livro():
+        status = getLivrosStatus()
+
         if request.method == 'POST':
             data = request.form
             api_url = base_api_url + '/livros/create'
@@ -114,16 +116,18 @@ def create_app(test_config=None):
                 'isbn': data['isbn'],
                 'category': data['category'],
                 'localization': data['localization'],
-                'is_activated': 1
+                'is_activated': 1,
+                'status_id': data['status_id'],
             })
             flash('Livro criado com sucesso')
             return redirect(url_for('livros'))
         
-        return render_template('livros/create.html')
+        return render_template('livros/create.html', status=status)
     
     @app.route('/livros/<int:id>', methods=['GET', 'POST'])
     def editar_livro(id):
         livro = getLivro(id)
+        status = getLivrosStatus()
 
         if livro.get('error'):
             flash(livro.get('error'))
@@ -141,12 +145,13 @@ def create_app(test_config=None):
                 'isbn': data['isbn'],
                 'category': data['category'],
                 'localization': data['localization'],
-                'is_activated': 1
+                'is_activated': 1,
+                'status_id': data['status_id'],
             })
             flash('Livro atualizado com sucesso')
             return redirect(url_for('livros'))
         
-        return render_template('livros/edit.html', livro=livro)
+        return render_template('livros/edit.html', livro=livro, status=status)
     
     @app.route('/livros/delete/<int:id>', methods=['GET'])
     def delete_livro(id):
@@ -159,6 +164,9 @@ def create_app(test_config=None):
     
     def getLivro(id):
         return requests.get(base_api_url + '/livros/' + str(id)).json()
+    
+    def getLivrosStatus():
+        return requests.get(base_api_url + '/livros/status').json()
 
     # empréstimos
     @app.route('/emprestimos', methods=['GET'])
@@ -180,7 +188,7 @@ def create_app(test_config=None):
                 'user_id': data['user_id'],
                 'loan_date': data['loan_date'],
                 'return_date': data['return_date'],
-                'is_activated': 1 if data['is_activated'] == 'true' else 0
+                'is_activated': 1
             })
             flash('Empréstimo criado com sucesso')
             return redirect(url_for('emprestimos'))
