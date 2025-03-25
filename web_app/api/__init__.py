@@ -1,4 +1,5 @@
 import os
+import requests
 
 from flask import Flask, request
 from .database.models import db, User, Book, BookStatus, Loan
@@ -270,23 +271,72 @@ def create_app(test_config=None):
                 'id': livro.id,
                 'title': livro.title,
                 'autor': livro.autor,
-                'editor': livro.editor,
+                'editor': livro.editor if livro.editor else '-',
                 'publish_year': livro.publish_year,
                 'isbn': livro.isbn,
-                'category': livro.category,
-                'localization': livro.localization,
+                'category': livro.category if livro.category else '-',
+                'localization': livro.localization if livro.localization else '-',
                 'is_activated': livro.is_activated,
                 'status_id': livro.status_id,
-                'status_name': livro.status.name,
+                'status_name': livro.status.name if livro.status else '-',
             } for livro in livros
         ]
     
     @app.route('/api/livros/<int:id>', methods=['GET'])
-    def getLivro(id):
+    def getLivroById(id):
         livro = Book.query.filter_by(id=id).first()
 
         if livro is None:
             return {'error': 'Livro não encontrado'}, 404
+
+        return {
+            'id': livro.id,
+            'title': livro.title,
+            'autor': livro.autor,
+            'editor': livro.editor if livro.editor else '-',
+            'publish_year': livro.publish_year,
+            'isbn': livro.isbn,
+            'category': livro.category if livro.category else '-',
+            'localization': livro.localization if livro.localization else '-',
+            'is_activated': livro.is_activated,
+            'status_id': livro.status_id,
+            'status_name': livro.status.name if livro.status else '-',
+        }
+    
+    @app.route('/api/livros/isbn/<string:isbn>', methods=['GET'])
+    def getLivroByIsbn(isbn):
+        livro = Book.query.filter_by(isbn=isbn).first()
+
+        if livro is None:
+            result = requests.get('https://openlibrary.org/search.json?isbn=' + isbn).json()
+
+            if len(result['docs']) == 0:
+                return {'error': 'Livro não encontrado'}, 404
+            
+            livro = Book(
+                title=result['docs'][0]['title'],
+                autor=result['docs'][0]['author_name'][0],
+                publish_year=result['docs'][0]['first_publish_year'],
+                isbn=isbn
+            )
+
+            db.session.add(livro)
+            db.session.commit()
+            
+            return [
+                {
+                    'id': livro.id,
+                    'title': livro.title,
+                    'autor': livro.autor,
+                    'editor': livro.editor,
+                    'publish_year': livro.publish_year,
+                    'isbn': livro.isbn,
+                    'category': livro.category,
+                    'localization': livro.localization,
+                    'is_activated': livro.is_activated,
+                    'status_id': livro.status_id,
+                    'status_name': livro.status.name if livro.status is not None else None
+            }]
 
         return {
             'id': livro.id,
@@ -299,7 +349,7 @@ def create_app(test_config=None):
             'localization': livro.localization,
             'is_activated': livro.is_activated,
             'status_id': livro.status_id,
-            'status_name': livro.status.name
+            'status_name': livro.status.name if livro.status is not None else None
         }
     
     @app.route('/api/livros/create', methods=['POST'])
