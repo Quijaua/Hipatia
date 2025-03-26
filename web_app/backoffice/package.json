@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "axios": "^1.8.4",
     "datatables.net-dt": "^2.2.2",
     "gaintime": "^3.0.0"
   }

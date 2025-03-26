@@ -311,7 +311,7 @@ def create_app(test_config=None):
             result = requests.get('https://openlibrary.org/search.json?isbn=' + isbn).json()
 
             if len(result['docs']) == 0:
-                return {'error': 'Livro não encontrado'}, 404
+                return {'error': 'Livro não encontrado'}
             
             livro = Book(
                 title=result['docs'][0]['title'],
@@ -320,23 +320,22 @@ def create_app(test_config=None):
                 isbn=isbn
             )
 
-            db.session.add(livro)
-            db.session.commit()
-            
-            return [
-                {
-                    'id': livro.id,
-                    'title': livro.title,
-                    'autor': livro.autor,
-                    'editor': livro.editor,
-                    'publish_year': livro.publish_year,
-                    'isbn': livro.isbn,
-                    'category': livro.category,
-                    'localization': livro.localization,
-                    'is_activated': livro.is_activated,
-                    'status_id': livro.status_id,
-                    'status_name': livro.status.name if livro.status is not None else None
-            }]
+            # db.session.add(livro)
+            # db.session.commit()
+
+            return {
+                'id': livro.id,
+                'title': livro.title,               
+                'autor': livro.autor if livro.autor != '[author not identified]' else None,
+                'editor': livro.editor,
+                'publish_year': livro.publish_year,
+                'isbn': livro.isbn,
+                'category': livro.category,
+                'localization': livro.localization,
+                'is_activated': livro.is_activated,
+                'status_id': livro.status_id if livro.status is not None else None,
+                'status_name': livro.status.name if livro.status is not None else None
+            }
 
         return {
             'id': livro.id,
