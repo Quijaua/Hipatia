@@ -26,9 +26,9 @@
             {% endfor %}
         </select>
         <label for="loan_date">Data saída</label>
-        <input type="date" name="loan_date" >
+        <input type="date" name="loan_date" value="{{ loan_date }}">
         <label for="return_date">Data devolução</label>
-        <input type="date" name="return_date" >
+        <input type="date" name="return_date" value="{{ return_date }}">
     </form>
     <input class="btn success" type="submit" value="Salvar" form="emprestimo-form">
     <a class="btn danger" href="/emprestimos">Cancelar</a>

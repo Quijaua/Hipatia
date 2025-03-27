@@ -17,7 +17,6 @@
                 <th>Usuário</th>
                 <th>Data saída</th>
                 <th>Data devolução</th>
-                <th>Ativo</th>
                 <th>Ações</th>
                 </tr>
             </thead>
@@ -29,10 +28,11 @@
                     <td>{{ emprestimo['user_name'] }}</td>
                     <td>{{ emprestimo['loan_date'] | date_filter }}</td>
                     <td>{{ emprestimo['return_date'] | date_filter }}</td>
-                    <td>{% if emprestimo['is_activated'] %}Sim{% else %}Não{% endif %}</td>
                     <td>
-                        <a class="action success" href="/emprestimos/{{ emprestimo['id'] }}">Editar</a>
-                        <a class="action danger" href="/emprestimos/delete/{{ emprestimo['id'] }}">Excluir</a>
+                        <a class="sm action success" href="{{  url_for('editar_emprestimo', id=emprestimo['id']) }}">Editar</a>
+                        <a class="sm action info" href="{{ url_for('devolucao_emprestimo', id=emprestimo['id']) }}">Devolução</a>
+                        <a class="sm action warning" href="{{  url_for('renovacao_emprestimo', id=emprestimo['id']) }}">Renovação</a>
+                        <a class="sm action danger" href="{{  url_for('delete_emprestimo', id=emprestimo['id']) }}">Excluir</a>
                     </td>
                 </tr>
                 {% endfor %}

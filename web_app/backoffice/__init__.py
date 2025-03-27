@@ -2,7 +2,7 @@ import os
 import requests
 
 from flask import Flask, render_template, request, redirect, url_for, flash
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def create_app(test_config=None):
     # create and configure the app
@@ -177,6 +177,8 @@ def create_app(test_config=None):
     def novo_emprestimo():
         usuarios = getUsuarios()
         livros = getLivros()
+        loan_date = datetime.now().strftime('%Y-%m-%d')
+        return_date = (datetime.now() + timedelta(days=15)).strftime('%Y-%m-%d')
 
         if request.method == 'POST':
             data = request.form
@@ -192,7 +194,7 @@ def create_app(test_config=None):
             flash('Empréstimo criado com sucesso')
             return redirect(url_for('emprestimos'))
         
-        return render_template('emprestimos/create.html', usuarios=usuarios, livros=livros)
+        return render_template('emprestimos/create.html', usuarios=usuarios, livros=livros, loan_date=loan_date, return_date=return_date)
     
     @app.route('/emprestimos/<int:id>', methods=['GET', 'POST'])
     def editar_emprestimo(id):
@@ -219,6 +221,18 @@ def create_app(test_config=None):
             return redirect(url_for('emprestimos'))
         
         return render_template('emprestimos/edit.html', emprestimo=emprestimo, usuarios=usuarios, livros=livros)
+    
+    @app.route('/emprestimos/devolucao/<int:id>', methods=['GET'])
+    def devolucao_emprestimo(id):
+        requests.put(base_api_url + '/emprestimos/devolucao/' + str(id))
+        flash('Empréstimo devolvido com sucesso')
+        return redirect(url_for('emprestimos'))
+    
+    @app.route('/emprestimos/renovacao/<int:id>', methods=['GET'])
+    def renovacao_emprestimo(id):
+        requests.put(base_api_url + '/emprestimos/renovacao/' + str(id))
+        flash('Empréstimo renovado com sucesso')
+        return redirect(url_for('emprestimos'))
     
     @app.route('/emprestimos/delete/<int:id>', methods=['GET'])
     def delete_emprestimo(id):

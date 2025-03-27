@@ -4,6 +4,7 @@ import requests
 from flask import Flask, request
 from .database.models import db, User, Book, BookStatus, Loan
 from dotenv import load_dotenv
+from datetime import timedelta
 
 
 def create_app(test_config=None):
@@ -147,7 +148,7 @@ def create_app(test_config=None):
     # empréstimos
     @app.route('/api/emprestimos', methods=['GET'])
     def getEmprestimos():
-        emprestimos = Loan.query.all()
+        emprestimos = Loan.query.where(Loan.is_activated == True).all()
 
         return [
             {
@@ -262,6 +263,51 @@ def create_app(test_config=None):
         db.session.commit()
 
         return {'message': 'Empréstimo excluído com sucesso'}
+    
+    @app.route('/api/emprestimos/devolucao/<int:id>', methods=['PUT'])
+    def devolucao(id):
+        emprestimo = Loan.query.filter_by(id=id).first()
+
+        if emprestimo is None:
+            return {'error': 'Empréstimo não encontrado'}, 404
+
+        emprestimo.is_activated = 0
+
+        book = Book.query.filter_by(id=emprestimo.book_id).first()
+        book.status_id = 1
+
+        db.session.commit()
+
+        return {
+            'id': emprestimo.id,
+            'livro': emprestimo.book_id,
+            'usuario': emprestimo.user_id,
+            'emprestado_em': emprestimo.loan_date,
+            'devolvido_em': emprestimo.return_date,
+            'is_activated': emprestimo.is_activated,
+            'created_at': emprestimo.created_at
+        }
+
+    @app.route('/api/emprestimos/renovacao/<int:id>', methods=['PUT'])
+    def renovacao(id):
+        emprestimo = Loan.query.filter_by(id=id).first()
+
+        if emprestimo is None:
+            return {'error': 'Empréstimo não encontrado'}, 404
+
+        emprestimo.return_date = emprestimo.return_date + timedelta(days=15)
+
+        db.session.commit()
+
+        return {
+            'id': emprestimo.id,
+            'livro': emprestimo.book_id,
+            'usuario': emprestimo.user_id,
+            'emprestado_em': emprestimo.loan_date,
+            'devolvido_em': emprestimo.return_date,
+            'is_activated': emprestimo.is_activated,
+            'created_at': emprestimo.created_at
+        }
     
     # livros
     @app.route('/api/livros', methods=['GET'])
