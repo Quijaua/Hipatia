@@ -117,7 +117,6 @@ def create_app(test_config=None):
                 'category': data['category'],
                 'localization': data['localization'],
                 'is_activated': 1,
-                'status_id': data['status_id'],
             })
             flash('Livro criado com sucesso')
             return redirect(url_for('livros'))

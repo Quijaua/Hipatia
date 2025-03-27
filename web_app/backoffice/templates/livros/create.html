@@ -25,13 +25,6 @@
         <input id="category" type="text" name="category" >
         <label for="localization">Localização</label>
         <input id="localization" type="text" name="localization" >
-        <label for="status_id">Status</label>
-        <select id="status_id" name="status_id">
-            <option value="">Selecione</option>
-            {% for status in status %}
-                <option value="{{ status['id'] }}">{{ status['name'] }}</option>
-            {% endfor %}
-        </select>
     </form>
     <input class="btn success" type="submit" value="Salvar" form="livro-form">
     <a class="btn danger" href="/livros">Cancelar</a>
@@ -67,7 +60,6 @@
                         $('#publish_year').val(livro.publish_year);
                         $('#category').val(livro.category);
                         $('#localization').val(livro.localization);
-                        $('#status_id').val(livro.status_id);
                     }
                 })                
             }

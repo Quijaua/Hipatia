@@ -27,7 +27,6 @@ def create_app(test_config=None):
 
     app.config.from_mapping(
         SECRET_KEY='dev',
-        # DATABASE=os.path.join(app.instance_path, 'hipatia.sqlite'),
     )
 
     if test_config is None:
@@ -323,9 +322,6 @@ def create_app(test_config=None):
                 isbn=isbn
             )
 
-            # db.session.add(livro)
-            # db.session.commit()
-
             return {
                 'id': livro.id,
                 'title': livro.title,               
@@ -336,8 +332,6 @@ def create_app(test_config=None):
                 'category': livro.category,
                 'localization': livro.localization,
                 'is_activated': livro.is_activated,
-                'status_id': livro.status_id if livro.status is not None else None,
-                'status_name': livro.status.name if livro.status is not None else None
             }
 
         return {
@@ -350,8 +344,6 @@ def create_app(test_config=None):
             'category': livro.category,
             'localization': livro.localization,
             'is_activated': livro.is_activated,
-            'status_id': livro.status_id,
-            'status_name': livro.status.name if livro.status is not None else None
         }
     
     @app.route('/api/livros/create', methods=['POST'])
@@ -367,7 +359,7 @@ def create_app(test_config=None):
             category=data['category'],
             localization=data['localization'],
             is_activated=data['is_activated'],
-            status_id=data['status_id']
+            status_id=1
         )
         db.session.add(livro)
         db.session.commit()
@@ -381,7 +373,9 @@ def create_app(test_config=None):
             'isbn': livro.isbn,
             'categoria': livro.category,
             'localizacao': livro.localization,
-            'is_activated': livro.is_activated
+            'is_activated': livro.is_activated,
+            'status_id': livro.status_id,
+            'status_name': livro.status.name if livro.status is not None else None
         }
     
     @app.route('/api/livros/update/<int:id>', methods=['PUT'])
