@@ -258,6 +258,9 @@ def create_app(test_config=None):
 
         if emprestimo is None:
             return {'error': 'Empréstimo não encontrado'}, 404
+        
+        livro = Book.query.filter_by(id=emprestimo.book_id).first()
+        livro.status_id = 1
 
         db.session.delete(emprestimo)
         db.session.commit()
