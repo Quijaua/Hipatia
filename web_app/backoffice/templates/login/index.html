@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Login{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form id="login-form" class="gt-form" action="/login" method="POST">
+        <label for="email">Email</label>
+        <input type="email" name="email" required>
+        <label for="password">Senha</label>
+        <input type="password" name="password" required>
+        <br>
+        <input type="checkbox" name="remember"> Lembrar de mim
+    </form>
+    <input class="btn success" type="submit" value="Login" form="login-form">
+</div>
+{% endblock %}

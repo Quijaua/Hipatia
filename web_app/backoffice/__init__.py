@@ -2,14 +2,29 @@ import os
 import requests
 
 from flask import Flask, render_template, request, redirect, url_for, flash
+from .database.models import db, User
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
 def create_app(test_config=None):
+    load_dotenv()
+    login_manager = LoginManager()
+
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+
+    login_manager.init_app(app)
+    login_manager.login_view = 'login'
+    login_manager.login_message = 'Por favor, faça o login para aceesar esta página'
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    db.init_app(app)
+
     app.config.from_mapping(
         SECRET_KEY='dev',
-        # DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
 
     if test_config is None:
@@ -25,20 +40,52 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    base_api_url = 'http://localhost:5001/api'
+
     @app.route('/', methods=['GET'])
     def index():
         return render_template('index.html')
     
-    base_api_url = 'http://localhost:5001/api'
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        if request.method == 'POST':
+            data = request.form
+            api_url = base_api_url + '/login'
+
+            response = requests.post(api_url, json={
+                'email': data['email'],
+                'password': data['password'],
+                'remember': True if data.get('remember') else False
+            })
+            if response.status_code == 200:
+                user = User.query.filter_by(email=data['email']).first()
+                login_user(user, remember=data.get('remember'))
+                return redirect(url_for('index'))
+            else:
+                flash('Email ou senha inválidos')
+
+        return render_template('login/index.html')
+    
+    @app.route('/logout', methods=['GET'])
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for('index'))
     
     # Rotas da aplicação
     # usuários
     @app.route('/usuarios', methods=['GET'])
+    @login_required
     def usuarios():
         usuarios = getUsuarios()
         return render_template('usuarios/index.html', usuarios=usuarios)
     
     @app.route('/usuarios/novo', methods=['GET', 'POST'])
+    @login_required
     def novo_usuario():
         if request.method == 'POST':
             data = request.form
@@ -58,6 +105,7 @@ def create_app(test_config=None):
         return render_template('usuarios/create.html')
     
     @app.route('/usuarios/<int:id>', methods=['GET', 'POST'])
+    @login_required
     def editar_usuario(id):
         usuario = getUsuario(id)
 
@@ -83,6 +131,7 @@ def create_app(test_config=None):
         return render_template('usuarios/edit.html', usuario=usuario)
     
     @app.route('/usuarios/delete/<int:id>', methods=['GET'])
+    @login_required
     def delete_usuario(id):
         requests.delete(base_api_url + '/usuarios/delete/' + str(id))
         flash('Usuário excluído com sucesso')
@@ -96,11 +145,13 @@ def create_app(test_config=None):
     
     # livros
     @app.route('/livros', methods=['GET'])
+    @login_required
     def livros():
         livros = getLivros()
         return render_template('livros/index.html', livros=livros)
     
     @app.route('/livros/novo', methods=['GET', 'POST'])
+    @login_required
     def novo_livro():
         status = getLivrosStatus()
 
@@ -124,6 +175,7 @@ def create_app(test_config=None):
         return render_template('livros/create.html', status=status)
     
     @app.route('/livros/<int:id>', methods=['GET', 'POST'])
+    @login_required
     def editar_livro(id):
         livro = getLivro(id)
         status = getLivrosStatus()
@@ -153,6 +205,7 @@ def create_app(test_config=None):
         return render_template('livros/edit.html', livro=livro, status=status)
     
     @app.route('/livros/delete/<int:id>', methods=['GET'])
+    @login_required
     def delete_livro(id):
         requests.delete(base_api_url + '/livros/delete/' + str(id))
         flash('Livro excluído com sucesso')
@@ -169,11 +222,13 @@ def create_app(test_config=None):
 
     # empréstimos
     @app.route('/emprestimos', methods=['GET'])
+    @login_required
     def emprestimos():
         emprestimos = getEmprestimos()
         return render_template('emprestimos/index.html', emprestimos=emprestimos)
     
     @app.route('/emprestimos/novo', methods=['GET', 'POST'])
+    @login_required
     def novo_emprestimo():
         usuarios = getUsuarios()
         livros = getLivros()
@@ -197,6 +252,7 @@ def create_app(test_config=None):
         return render_template('emprestimos/create.html', usuarios=usuarios, livros=livros, loan_date=loan_date, return_date=return_date)
     
     @app.route('/emprestimos/<int:id>', methods=['GET', 'POST'])
+    @login_required
     def editar_emprestimo(id):
         emprestimo = getEmprestimo(id)
         usuarios = getUsuarios()
@@ -223,18 +279,21 @@ def create_app(test_config=None):
         return render_template('emprestimos/edit.html', emprestimo=emprestimo, usuarios=usuarios, livros=livros)
     
     @app.route('/emprestimos/devolucao/<int:id>', methods=['GET'])
+    @login_required
     def devolucao_emprestimo(id):
         requests.put(base_api_url + '/emprestimos/devolucao/' + str(id))
         flash('Empréstimo devolvido com sucesso')
         return redirect(url_for('emprestimos'))
     
     @app.route('/emprestimos/renovacao/<int:id>', methods=['GET'])
+    @login_required
     def renovacao_emprestimo(id):
         requests.put(base_api_url + '/emprestimos/renovacao/' + str(id))
         flash('Empréstimo renovado com sucesso')
         return redirect(url_for('emprestimos'))
     
     @app.route('/emprestimos/delete/<int:id>', methods=['GET'])
+    @login_required
     def delete_emprestimo(id):
         requests.delete(base_api_url + '/emprestimos/delete/' + str(id))
         flash('Empréstimo excluído com sucesso')

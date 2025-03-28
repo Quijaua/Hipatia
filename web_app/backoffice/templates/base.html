@@ -15,6 +15,16 @@
         <li {% if request.path == url_for('usuarios') %}class="active"{% endif %}><a href="{{ url_for('usuarios') }}">Usuários</a></li>
         <li {% if request.path == url_for('livros') %}class="active"{% endif %}><a href="{{ url_for('livros') }}">Livros</a></li>
         <li {% if request.path == url_for('emprestimos') %}class="active"{% endif %}><a href="{{ url_for('emprestimos') }}">Emprestimos</a></li>
+        <li>
+          {% if current_user.is_authenticated %}
+          <a href="{{ url_for('logout') }}">Logout</a>
+          {% endif %}
+        </li>
+        <li>
+          {% if not current_user.is_authenticated %}
+          <a href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+        </li>
       </ul>
     </nav>
   </header>

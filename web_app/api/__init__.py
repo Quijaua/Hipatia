@@ -2,6 +2,8 @@ import os
 import requests
 
 from flask import Flask, request
+from flask_login import LoginManager
+from werkzeug.security import generate_password_hash, check_password_hash
 from .database.models import db, User, Book, BookStatus, Loan
 from dotenv import load_dotenv
 from datetime import timedelta
@@ -9,9 +11,12 @@ from datetime import timedelta
 
 def create_app(test_config=None):
     load_dotenv()
+    login_manager = LoginManager()
 
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+
+    login_manager.init_app(app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -24,6 +29,10 @@ def create_app(test_config=None):
             db.session.add(BookStatus(name='Emprestado'))
             db.session.add(BookStatus(name='Reservado'))
             db.session.add(BookStatus(name='Extraviado'))
+            db.session.commit()
+
+        if len(User.query.all()) == 0:
+            db.session.add(User(name='administrador', email='admin@hipatia.com', password=generate_password_hash('admin', method='scrypt', salt_length=16), role='admin', is_activated=True))
             db.session.commit()
 
     app.config.from_mapping(
@@ -44,6 +53,35 @@ def create_app(test_config=None):
         pass
 
     # Rotas da API
+    # Autenticação
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+    
+    @app.route('/api/login', methods=['POST'])
+    def login():
+        data = request.get_json()
+        print(data)
+        email = data['email']
+        password = data['password']
+        remember = data['remember']
+
+        user = User.query.filter_by(email=email).first()
+        print(user)
+        if user is None or not check_password_hash(user.password, password):
+            return {'error': 'Email ou senha inválidos'}, 401
+
+        return {
+            'id': user.id,
+            'name': user.name,
+            'email': user.email,
+            'role': user.role,
+            'is_activated': user.is_activated,
+            'phone': user.phone,
+            'cpf': user.cpf,
+            'remember': remember
+        }
+
     # usuários
     @app.route('/api/usuarios', methods=['GET'])
     def getUsuarios():
