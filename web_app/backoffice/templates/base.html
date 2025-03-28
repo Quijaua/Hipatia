@@ -14,7 +14,7 @@
         <li {% if request.path == url_for('index') %}class="active"{% endif %}><a href="{{ url_for('index') }}">Home</a></li>
         <li {% if request.path == url_for('usuarios') %}class="active"{% endif %}><a href="{{ url_for('usuarios') }}">Usuários</a></li>
         <li {% if request.path == url_for('livros') %}class="active"{% endif %}><a href="{{ url_for('livros') }}">Livros</a></li>
-        <li {% if request.path == url_for('emprestimos') %}class="active"{% endif %}><a href="{{ url_for('emprestimos') }}">Emprestimos</a></li>
+        <li {% if request.path == url_for('emprestimos') %}class="active"{% endif %}><a href="{{ url_for('emprestimos') }}">Empréstimos</a></li>
         <li>
           {% if current_user.is_authenticated %}
           <a href="{{ url_for('logout') }}">Logout</a>
