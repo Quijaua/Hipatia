@@ -1,0 +1,39 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - Hipatia</title>
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static',filename='styles/gaintime.min.css') }}">
+<section class="content">
+  <header class="gt-top-menu xs-left">
+    <!--img src="assets/img/gaintime.png" alt="" /-->
+    <label class="menu-toggle">
+      <svg viewBox="0 0 24 24">
+        <path fill="#333" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"></path>
+      </svg>
+    </label>
+    <nav>
+      <ul>
+        <li {% if request.path == url_for('index') %}class="active"{% endif %}><a href="{{ url_for('index') }}">Home</a></li>
+        <li {% if request.path == url_for('usuarios') %}class="active"{% endif %}><a href="{{ url_for('usuarios') }}">Usuários</a></li>
+        <li {% if request.path == url_for('livros') %}class="active"{% endif %}><a href="{{ url_for('livros') }}">Livros</a></li>
+        <li {% if request.path == url_for('emprestimos') %}class="active"{% endif %}><a href="{{ url_for('emprestimos') }}">Empréstimos</a></li>
+        <li>
+          {% if current_user.is_authenticated %}
+          <a href="{{ url_for('logout') }}">Logout</a>
+          {% endif %}
+        </li>
+        <li>
+          {% if not current_user.is_authenticated %}
+          <a href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+        </li>
+      </ul>
+    </nav>
+  </header>
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+  {% for message in get_flashed_messages() %}
+    <div class="inform info">{{ message }}</div>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</section>
+<script type="text/javascript" src="{{ url_for('static',filename='js/gaintime.min.js') }}"></script>

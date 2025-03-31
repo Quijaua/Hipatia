@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Usuários{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div>
+    <h1>Editar Empréstimo</h1>
+</div>
+
+<div class="container">
+    <form id="emprestimo-form" class="gt-form" action="/emprestimos/{{ emprestimo['id'] }}" method="POST" accept="application/json">
+        <label for="name">Livro</label>
+        <select name="book_id" id="book_id">
+            <option value="">Selecione um livro</option>
+            {% for livro in livros %}
+            <option value="{{ livro['id'] }}" {% if livro['id'] == emprestimo['book_id'] %}selected{% endif %}>{{ livro['title'] }}</option>
+            {% endfor %}
+        </select>
+        <label for="email">Usuário</label>
+        <select name="user_id" id="user_id">
+            <option value="">Selecione um usuário</option>
+            {% for usuario in usuarios %}
+            <option value="{{ usuario['id'] }}" {% if usuario['id'] == emprestimo['user_id'] %}selected{% endif %}>{{ usuario['nome'] }}</option>
+            {% endfor %}
+        </select>
+        <label for="loan_date">Data saída</label>
+        <input type="date" name="loan_date" value="{{ emprestimo['loan_date'] }}">
+        <label for="return_date">Data devolução</label>
+        <input type="date" name="return_date" value="{{ emprestimo['return_date'] }}">
+        <label for="is_activated">Ativo</label>
+        <select name="is_activated">
+            <option value="true" {% if emprestimo['is_activated'] %}selected{% endif %}>Sim</option>
+            <option value="false" {% if not emprestimo['is_activated'] %}selected{% endif %}>Não</option>
+        </select>
+    </form>
+    <input class="btn success" type="submit" value="Salvar" form="emprestimo-form">
+    <a class="btn danger" href="/emprestimos">Cancelar</a>
+</div>
+
+{% endblock %}

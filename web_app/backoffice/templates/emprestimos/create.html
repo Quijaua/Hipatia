@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Empréstimos{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div>
+    <h1>Criar Empréstimo</h1>
+</div>
+
+<div class="container">
+    <form id="emprestimo-form" class="gt-form" action="/emprestimos/novo" method="POST" accept="application/json">
+        <label for="book_id">Livro</label>
+        <select name="book_id" id="book_id">
+            <option value="">Selecione um livro</option>
+            {% for livro in livros %}
+            <option value="{{ livro['id'] }}">{{ livro['title'] }}</option>
+            {% endfor %}
+        </select>
+        <label for="user_id">Usuário</label>
+        <select name="user_id" id="user_id">
+            <option value="">Selecione um usuário</option>
+            {% for usuario in usuarios %}
+            <option value="{{ usuario['id'] }}">{{ usuario['nome'] }}</option>
+            {% endfor %}
+        </select>
+        <label for="loan_date">Data saída</label>
+        <input type="date" name="loan_date" value="{{ loan_date }}">
+        <label for="return_date">Data devolução</label>
+        <input type="date" name="return_date" value="{{ return_date }}">
+    </form>
+    <input class="btn success" type="submit" value="Salvar" form="emprestimo-form">
+    <a class="btn danger" href="/emprestimos">Cancelar</a>
+</div>
+
+{% endblock %}

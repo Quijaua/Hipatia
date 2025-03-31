@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/dataTables.min.css') }}">
+    <h1>{% block title %}Livros{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <a class="btn success" href="/livros/novo">Novo</a>
+        <br><br>
+        <table id="livros-table" class="gt-table striped hovered">
+            <thead>
+                <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Editora</th>
+                <th>Ano de publicação</th>
+                <th>ISBN</th>
+                <th>Categoria</th>
+                <th>Localização</th>
+                <th>Status</th>
+                <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for livro in livros %}
+                <tr>
+                    <td>{{ livro['title'] }}</td>
+                    <td>{{ livro['autor'] }}</td>
+                    <td>{{ livro['editor'] }}</td>
+                    <td>{{ livro['publish_year'] }}</td>
+                    <td>{{ livro['isbn'] }}</td>
+                    <td>{{ livro['category'] }}</td>
+                    <td>{{ livro['localization'] }}</td>
+                    <td>{{ livro['status_name'] }}</td>
+                    <td>
+                        <a class="sm action success" href="/livros/{{ livro['id'] }}">Editar</a>
+                        <a class="sm action danger" href="/livros/delete/{{ livro['id'] }}">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.7.1.slim.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/dataTables.min.js') }}" defer></script>
+    <script type="text/javascript" defer>
+        $(document).ready(function() {
+            $('#livros-table').DataTable({
+                "language": {
+                'search': 'Buscar',
+                'lengthMenu': 'Mostrando _MENU_ registros por página',
+                'zeroRecords': 'Nenhum registro encontrado',
+                'info': 'Mostrando página _PAGE_ de _PAGES_',
+                'infoEmpty': 'Nenhum registro encontrado',
+                'infoFiltered': '(Filtrado de _MAX_ registros no total)'
+            }})
+        })
+    </script>
+{% endblock %}

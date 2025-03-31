@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Livros{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div>
+    <h1>Criar Livro</h1>
+</div>
+
+<div class="container">
+    <form id="livro-form" class="gt-form" action="/livros/novo" method="POST" accept="application/json">
+        <label for="isbn">ISBN</label>
+        <input id="isbn" type="text" name="isbn" >
+        <label for="title">Título</label>
+        <input id="title" type="text" name="title" required>
+        <label for="author">Autor</label>
+        <input id="author" type="text" name="author" required>
+        <label for="editor">Editora</label>
+        <input id="editor" type="text" name="editor" >
+        <label for="publish_year">Ano de publicação</label>
+        <input id="publish_year" type="text" name="publish_year" >
+        <label for="category">Categoria</label>
+        <input id="category" type="text" name="category" >
+        <label for="localization">Localização</label>
+        <input id="localization" type="text" name="localization" >
+    </form>
+    <input class="btn success" type="submit" value="Salvar" form="livro-form">
+    <a class="btn danger" href="/livros">Cancelar</a>
+</div>
+<script type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.7.1.slim.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/axios.min.js') }}"></script>
+<script>
+    $(document).ready(function() {
+
+        let isbn = null;
+        let livro = null;
+
+        $('#isbn').blur(function() {
+
+            isbn = $(this).val();
+
+            if (isbn) {
+
+                axios.get('http://localhost:5001/api/livros/isbn/' + isbn).then(response => {
+
+                    if (response.data && !response.data.error) {
+
+                        livro = response.data;
+
+                        if (livro.id) {
+                            alert('Existe um livro com o ISBN ' + isbn + ' cadastrado no sistema!');
+                            return
+                        };
+
+                        $('#title').val(livro.title);
+                        $('#author').val(livro.autor);
+                        $('#editor').val(livro.editor);
+                        $('#publish_year').val(livro.publish_year);
+                        $('#category').val(livro.category);
+                        $('#localization').val(livro.localization);
+                    }
+                })                
+            }
+        });
+    });
+</script>
+{% endblock %}

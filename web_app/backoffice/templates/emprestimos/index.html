@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/dataTables.min.css') }}">
+    <h1>{% block title %}Empréstimos{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <a class="btn success" href="/emprestimos/novo">Novo</a>
+        <br><br>
+        <table id="emprestimos-table" class="gt-table striped hovered">
+            <thead>
+                <tr>
+                <th>Livro</th>
+                <th>ISBN</th>
+                <th>Usuário</th>
+                <th>Data saída</th>
+                <th>Data devolução</th>
+                <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emprestimo in emprestimos %}
+                <tr>
+                    <td>{{ emprestimo['book_title'] }}</td>
+                    <td>{{ emprestimo['book_isbn'] }}</td>
+                    <td>{{ emprestimo['user_name'] }}</td>
+                    <td>{{ emprestimo['loan_date'] | date_filter }}</td>
+                    <td>{{ emprestimo['return_date'] | date_filter }}</td>
+                    <td>
+                        <a class="sm action success" href="{{  url_for('editar_emprestimo', id=emprestimo['id']) }}">Editar</a>
+                        <a class="sm action info" href="{{ url_for('devolucao_emprestimo', id=emprestimo['id']) }}">Devolução</a>
+                        <a class="sm action warning" href="{{  url_for('renovacao_emprestimo', id=emprestimo['id']) }}">Renovação</a>
+                        <a class="sm action danger" href="{{  url_for('delete_emprestimo', id=emprestimo['id']) }}">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.7.1.slim.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/dataTables.min.js') }}" defer></script>
+    <script type="text/javascript" defer>
+        $(document).ready(function() {
+            $('#emprestimos-table').DataTable({
+                "language": {
+                'search': 'Buscar',
+                'lengthMenu': 'Mostrando _MENU_ registros por página',
+                'zeroRecords': 'Nenhum registro encontrado',
+                'info': 'Mostrando página _PAGE_ de _PAGES_',
+                'infoEmpty': 'Nenhum registro encontrado',
+                'infoFiltered': '(Filtrado de _MAX_ registros no total)'
+            }})
+        })
+    </script>
+{% endblock %}
